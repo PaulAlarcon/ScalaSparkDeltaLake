@@ -1,0 +1,43 @@
+ls
+"a|b|c".split('|')
+"a|b|c".split('|').map(print)
+import org.apache.spark.sql.SparkSession
+val spark = SparkSession.builder().master("local[1]").appName("testing").getOrCreate()
+spark.sparkContext.parallelize(List(1, 2, 3, 4, 5))
+val rdd = spark.sparkContext.parallelize(List(1, 2, 3, 4, 5))
+rdd.collect()
+val a = 3
+spark.read.format("csv").path("/data/covid_vax_trend.csv")
+spark.read.format("csv").load("/data/covid_vax_trend.csv")
+spark.read.option("header", true).format("csv").load("/data/covid_vax_trend.csv")
+val vax_data spark.read.option("header", true).format("csv").load("/data/covid_vax_trend.csv")
+val vax_data = spark.read.option("header", true).format("csv").load("/data/covid_vax_trend.csv")
+  --conf "spark.sql.extensions=io.delta.sql.DeltaSparkSessionExtension" \
+scala
+val delta_path = "/data/delta/covid_vax_trend"
+val df = spark.read.format("delta").load(delta_path)
+df.show()
+val df = spark.read.format("delta").load(delta_path)
+val delta_path = "/data/delta/covid_vax_trend"
+val data_path = "/data/covid_vax_trend.csv"
+val df = spark.read.format("delta").load(delta_path)
+df.show()
+df.createOrReplaceTempView("covid_data")
+spark.sql("select * from covid_data").show()
+df.printSchema
+df.col("location").show()
+df.select("location").show()
+df.select("location").filter("location = 'NY'")show()
+import io.delta.tables._
+val deltaTable = DeltaTable.forPath(spark, delta_path)
+deltaTable.update(
+  col("location") === "NY",
+  Map("location" -> lit("New York")));
+val delta_path = "/data/delta/covid_vax_trend"
+val df = spark.read.format("delta").load(delta_path)
+df.createOrReplaceTempView("covid_data")
+df.select("location").show()
+deltaTable.update(
+  col("location") === "GA",
+  Map("location" -> lit("Georgia")));
+deltaTable.delete("location = 'Georgia'")
