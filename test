@@ -1,0 +1,27 @@
+import org.apache.spark.sql.{DataFrame, SparkSession}
+
+// Create a SparkSession
+val spark = SparkSession.builder()
+  .appName("ReadAvroFilesExample")
+  .master("local[*]")
+  .getOrCreate()
+
+// Define the parent directory path
+val parentDir = "path/to/parentdirectory"
+
+// Define the target date
+val targetDate = "5/31/2023"  // Replace with your desired date
+
+// Use recursive file listing to get all subdirectories within the parent directory
+val subdirectories = spark.sparkContext.wholeTextFiles(parentDir).map {
+  case (filePath, _) => filePath
+}.collect()
+
+// Filter the subdirectories that match the target date
+val targetSubdirectories = subdirectories.filter(_.endsWith(targetDate))
+
+// Read all the Avro files within the target subdirectories for the target date
+val avroFiles: DataFrame = spark.read.format("avro").load(targetSubdirectories.map(subdirectory => s"$subdirectory/*.avro"): _*)
+
+// Process the Avro files as needed
+avroFiles.show()
